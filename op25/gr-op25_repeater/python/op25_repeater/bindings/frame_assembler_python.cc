@@ -32,6 +32,15 @@ namespace py = pybind11;
 void bind_frame_assembler(py::module &m) {
 
   using frame_assembler = ::gr::op25_repeater::frame_assembler;
+  using op25_decode_stats = ::gr::op25_repeater::op25_decode_stats;
+
+  py::class_<op25_decode_stats>(m, "op25_decode_stats")
+      .def_readonly("tsbk_attempted", &op25_decode_stats::tsbk_attempted)
+      .def_readonly("tsbk_passed",    &op25_decode_stats::tsbk_passed)
+      .def_readonly("pdu_attempted",  &op25_decode_stats::pdu_attempted)
+      .def_readonly("pdu_passed",     &op25_decode_stats::pdu_passed)
+      .def_readonly("timeout_count",  &op25_decode_stats::timeout_count)
+      ;
 
   py::class_<frame_assembler, gr::block, gr::basic_block,
              std::shared_ptr<frame_assembler>>(m, "frame_assembler",
@@ -46,6 +55,8 @@ void bind_frame_assembler(py::module &m) {
 
       .def("control", &frame_assembler::control, py::arg("args"),
            D(frame_assembler, control))
+
+      .def("get_decode_stats", &frame_assembler::get_decode_stats)
 
       ;
 }
